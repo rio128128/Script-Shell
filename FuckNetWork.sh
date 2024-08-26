@@ -1,39 +1,47 @@
 #!/bin/bash
 
+red='\033[0;31m'
+green='\033[0;32m'
+yellow='\033[0;33m'
+plain='\033[0m'
+cur_dir=$(pwd)
 
-log_file="download_log.txt"
+# Check if the script is being run as root
+if [ "$(id -u)" != "0" ]; then
+    echo -e "${red}错误：${plain} 必须使用root用户运行此脚本! \n"
+    exit 1
+fi
 
+# Create the log file if it doesn't exist
+if [ ! -f "/root/Oracle_OneKey_Active.log" ]; then
+    echo "日志文件不存在，开始创建"
+    touch /root/Oracle_OneKey_Active.log
+fi
 
-urls=(
-  "https://autopatchcn.yuanshen.com/client_app/download/pc_zip/20230804185703_R1La3H9xIH1hBiHJ/YuanShen_4.0.0.zip"
-  "https://autopatchcn.yuanshen.com/client_app/download/pc_zip/20230804185703_R1La3H9xIH1hBiHJ/Audio_Chinese_4.0.0.zip"
-  "https://autopatchcn.yuanshen.com/client_app/download/launcher/20240314153152_0AZRlFRox2kHeTKf/mihoyo/yuanshen_setup_20240313190827.exe"
-)
+# Loop to download the file
+while true; do
+    # Check if the folder exists
+    if [ ! -d "/root/anti-recycling/" ]; then
+        echo -e "${green} 文件夹不存在,自动创建 ${plain}"
+        mkdir /root/anti-recycling
+    fi
 
+    # Check if the file exists and remove it if it does
+    if [ -f /root/anti-recycling/100mb.test ]; then
+        echo -e "${green} 自动清除上次残留 ${plain}"
+        rm -f /root/anti-recycling/100mb.test
+    fi
 
-start_time=$(date +"%Y-%m-%d %H:%M:%S")
-echo "下载开始时间: $start_time" >> "$log_file"
+    # Download the file
+    time=$(date "+%Y-%m-%d %H:%M:%S")
+    echo "${time} Start Download " >> /root/Oracle_OneKey_Active.log
+    wget --limit-rate=8M http://speedtest.fremont.linode.com/100MB-fremont.bin -O /root/anti-recycling/100mb.test
 
-
-for url in "${urls[@]}"; do
-  echo "正在下载 $url..." >> "$log_file"
-
-
-  size_bytes=$(curl -s -w "%{size_download}" -o /dev/null "$url")
-
-
-  if [[ $size_bytes -eq 0 ]]; then
-    echo "下载失败或文件为空 $url " >> "$log_file"
-  else
-    # 将文件大小从字节转换为GB并保留6位小数
-    size_gb=$(awk "BEGIN {print $size_bytes / 1024 / 1024 / 1024}")
-
-    echo "已下载 $url 文件大小: ${size_gb} GB" >> "$log_file"
-  fi
+    # Wait for 2.8 minutes before repeating
+    echo -e "${green} 下载完成，等待168S(2.8Min)继续运行 ${plain}"
+    time=$(date "+%Y-%m-%d %H:%M:%S")
+    echo "${time} start wait " >> /root/Oracle_OneKey_Active.log
+    sleep 168
+    time=$(date "+%Y-%m-%d %H:%M:%S")
+    echo "${time} ==================== " >> /root/Oracle_OneKey_Active.log
 done
-
-
-end_time=$(date +"%Y-%m-%d %H:%M:%S")
-echo "下载完成时间: $end_time" >> "$log_file"
-
-echo "==============================================="

@@ -33,9 +33,9 @@ else
     mkdir /root/anti-recycling
 fi
 #Check file and download
-if [ -f /root/anti-recycling/100mb.test ]; then
+if [ -f /root/anti-recycling/1000mb.test ]; then
 echo -e " ${green} 自动清除上次残留 ${plain} "
-rm -f /root/anti-recycling/100mb.test
+rm -f /root/anti-recycling/1000mb.test
   else
   echo -e " ${green} 无残留，开始跑网络 ${plain} "
 fi

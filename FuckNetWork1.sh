@@ -38,10 +38,10 @@ while true; do
     wget --limit-rate=200M http://speedtest.fremont.linode.com/100MB-fremont.bin -O /root/anti-recycling/100mb.test
 
     # Wait for 2.8 minutes before repeating
-    echo -e "${green} 下载完成，等待168S(2.8Min)继续运行 ${plain}"
+    echo -e "${green} 下载完成，等待60S(2.8Min)继续运行 ${plain}"
     time=$(date "+%Y-%m-%d %H:%M:%S")
     echo "${time} start wait " >> /root/anti-recycling/Oracle_OneKey_Active.log
-    sleep 168
+    sleep 60
     time=$(date "+%Y-%m-%d %H:%M:%S")
     echo "${time} ==================== " >> /root/anti-recycling/Oracle_OneKey_Active.log
 done

@@ -27,21 +27,21 @@ while true; do
     fi
 
     # Check if the file exists and remove it if it does
-    if [ -f /root/anti-recycling/1000mb.test ]; then
+    if [ -f /root/anti-recycling/100mb.test ]; then
         echo -e "${green} 自动清除上次残留 ${plain}"
-        rm -f /root/anti-recycling/1000mb.test
+        rm -f /root/anti-recycling/100mb.test
     fi
 
     # Download the file
     time=$(date "+%Y-%m-%d %H:%M:%S")
     echo "${time} Start Download " >> /root/anti-recycling/Oracle_OneKey_Active.log
-    wget --limit-rate=200M http://speedtest.fremont.linode.com/1000MB-fremont.bin -O /root/anti-recycling/1000mb.test
+    wget --limit-rate=200M http://speedtest.fremont.linode.com/100MB-fremont.bin -O /root/anti-recycling/100mb.test
 
     # Wait for 2.8 minutes before repeating
-    echo -e "${green} 下载完成，等待300S(2.8Min)继续运行 ${plain}"
+    echo -e "${green} 下载完成，等待168S(2.8Min)继续运行 ${plain}"
     time=$(date "+%Y-%m-%d %H:%M:%S")
     echo "${time} start wait " >> /root/anti-recycling/Oracle_OneKey_Active.log
-    sleep 300
+    sleep 168
     time=$(date "+%Y-%m-%d %H:%M:%S")
     echo "${time} ==================== " >> /root/anti-recycling/Oracle_OneKey_Active.log
 done

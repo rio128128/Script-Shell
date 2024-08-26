@@ -13,9 +13,9 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 # Create the log file if it doesn't exist
-if [ ! -f "/root/Oracle_OneKey_Active.log" ]; then
+if [ ! -f "/root/anti-recycling/Oracle_OneKey_Active.log" ]; then
     echo "日志文件不存在，开始创建"
-    touch /root/Oracle_OneKey_Active.log
+    touch /root/anti-recycling/Oracle_OneKey_Active.log
 fi
 
 # Loop to download the file
@@ -34,14 +34,14 @@ while true; do
 
     # Download the file
     time=$(date "+%Y-%m-%d %H:%M:%S")
-    echo "${time} Start Download " >> /root/Oracle_OneKey_Active.log
-    wget --limit-rate=100M http://speedtest.fremont.linode.com/1000MB-fremont.bin -O /root/anti-recycling/1000mb.test
+    echo "${time} Start Download " >> /root/anti-recycling/Oracle_OneKey_Active.log
+    wget --limit-rate=200M http://speedtest.fremont.linode.com/1000MB-fremont.bin -O /root/anti-recycling/1000mb.test
 
     # Wait for 2.8 minutes before repeating
     echo -e "${green} 下载完成，等待300S(2.8Min)继续运行 ${plain}"
     time=$(date "+%Y-%m-%d %H:%M:%S")
-    echo "${time} start wait " >> /root/Oracle_OneKey_Active.log
+    echo "${time} start wait " >> /root/anti-recycling/Oracle_OneKey_Active.log
     sleep 300
     time=$(date "+%Y-%m-%d %H:%M:%S")
-    echo "${time} ==================== " >> /root/Oracle_OneKey_Active.log
+    echo "${time} ==================== " >> /root/anti-recycling/Oracle_OneKey_Active.log
 done

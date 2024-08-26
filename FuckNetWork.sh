@@ -1,56 +1,39 @@
 #!/bin/bash
 
-red='\033[0;31m'
-green='\033[0;32m'
-yellow='\033[0;33m'
-plain='\033[0m'
-cur_dir=$(pwd)
+
+log_file="download_log.txt"
 
 
-# check root
-[[ $EUID -ne 0 ]] && echo -e "${red}错误：${plain} 必须使用root用户运行此脚本！\n" && exit 1
+urls=(
+  "https://autopatchcn.yuanshen.com/client_app/download/pc_zip/20230804185703_R1La3H9xIH1hBiHJ/YuanShen_4.0.0.zip"
+  "https://autopatchcn.yuanshen.com/client_app/download/pc_zip/20230804185703_R1La3H9xIH1hBiHJ/Audio_Chinese_4.0.0.zip"
+  "https://autopatchcn.yuanshen.com/client_app/download/launcher/20240314153152_0AZRlFRox2kHeTKf/mihoyo/yuanshen_setup_20240313190827.exe"
+)
 
 
-#logs
-if [ -f "/root/Oracle_OneKey_Active.log" ];then
-    echo "日志文件存在"
-else
-    echo "日志文件不存在，开始创建"
-    touch /root/Oracle_OneKey_Active.log
-fi
+start_time=$(date +"%Y-%m-%d %H:%M:%S")
+echo "下载开始时间: $start_time" >> "$log_file"
 
-sleep 3
-#循环下载
-while true
-do
-sleep 3
-clear
-   #Check folder
-if [ -d "/root/anti-recycling/" ];then
-    echo -e " ${green} 文件夹存在 ${plain} "
-else
-    echo -e " ${green} 文件夹不存在,自动创建 ${plain} "
-    mkdir /root/anti-recycling
-fi
-#Check file and download
-if [ -f /root/anti-recycling/1000mb.test ]; then
-echo -e " ${green} 自动清除上次残留 ${plain} "
-rm -f /root/anti-recycling/1000mb.test
+
+for url in "${urls[@]}"; do
+  echo "正在下载 $url..." >> "$log_file"
+
+
+  size_bytes=$(curl -s -w "%{size_download}" -o /dev/null "$url")
+
+
+  if [[ $size_bytes -eq 0 ]]; then
+    echo "下载失败或文件为空 $url " >> "$log_file"
   else
-  echo -e " ${green} 无残留，开始跑网络 ${plain} "
-fi
-time=$(date "+%Y-%m-%d %H:%M:%S")
-echo "${time} Start Download " >> /root/Oracle_OneKey_Active.log
+    # 将文件大小从字节转换为GB并保留6位小数
+    size_gb=$(awk "BEGIN {print $size_bytes / 1024 / 1024 / 1024}")
 
-wget --limit-rate=100M  http://speedtest.fremont.linode.com/1000MB-fremont.bin  -O /root/anti-recycling/1000mb.test
-
-clear
-rm -f /root/nohup.out
-echo -e " ${green} 下载完成，等待168S(2.8Min)继续运行 ${plain} "
-time=$(date "+%Y-%m-%d %H:%M:%S")
-echo "${time} start wait " >> /root/Oracle_OneKey_Active.log
-sleep 168
-time=$(date "+%Y-%m-%d %H:%M:%S")
-echo "${time} ==================== " >> /root/Oracle_OneKey_Active.log    
-
+    echo "已下载 $url 文件大小: ${size_gb} GB" >> "$log_file"
+  fi
 done
+
+
+end_time=$(date +"%Y-%m-%d %H:%M:%S")
+echo "下载完成时间: $end_time" >> "$log_file"
+
+echo "==============================================="
